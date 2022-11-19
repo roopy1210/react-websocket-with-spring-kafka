@@ -1,0 +1,14 @@
+server:
+  port: 9001
+
+spring:
+  output:
+    # Console Color 표시
+    ansi:
+      enabled: ALWAYS
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+
+debug: true
