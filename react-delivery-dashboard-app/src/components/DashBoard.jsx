@@ -14,7 +14,6 @@ const stompClient = Stomp.over(sockJS);
 
 const DashBoard = (props) => {
     const [ deliveryList, setDeliveryList ] = useState(props.items);
-    console.log(deliveryList);
 
     useEffect(() => {
         connect();
