@@ -4,7 +4,7 @@
  * npm install sockjs-client --save
  * npm install socket.io
  */
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
@@ -12,13 +12,12 @@ import Stomp from "stompjs";
 const sockJS = new SockJS('http://localhost:9001/delivery');
 const stompClient = Stomp.over(sockJS);
 
-const DashBoard= () => {
+const DashBoard = (props) => {
+    const [ deliveryList, setDeliveryList ] = useState(props.items);
+    console.log(deliveryList);
+
     useEffect(() => {
         connect();
-
-        return () => {
-            stompClient.disconnect();
-        }
     });
 
     // When connection is ok then subscribe Delivery status otherwise error message print
@@ -28,9 +27,27 @@ const DashBoard= () => {
 
     // When socket connection connect
     const onConnected = () => {
-        stompClient.subscribe('/topic/delivery', function(payload) {
-            const obj = JSON.parse(payload.body);
-            console.log(`차량번호 : ${obj.carNo}, 배송상태 : ${obj.deliveryStatus}`);
+        stompClient.subscribe('/topic/delivery', (payload) => {
+            const newDelivery = JSON.parse(payload.body);
+            
+            // Change delivery status of response data
+            const newDeliveryList = deliveryList.map((item) => {
+                if (item.id === newDelivery.id) {
+                    if (newDelivery.status === 'PENDING') {
+                        item.status = '배송전';
+                    } else if (newDelivery.status === 'DELIVERING') {
+                        item.status = '배송중';
+                    } else {
+                        item.status = '배송완료';
+                    }
+                    item.statusColor = newDelivery.statusColor.toLowerCase();
+                }
+                
+                
+                return item;
+            })
+           
+            setDeliveryList(newDeliveryList);
         });
     }
 
@@ -48,30 +65,16 @@ const DashBoard= () => {
                     </h1>
                 </div>
                 <ul className="list-none mt-3">
-                    <li className="flex items-center justify-between px-2 py-3 border-b">
-                        <div>                            
-                            <p className="mt-1 text-md font-bold text-indigo-900">라이더1(김길동)</p>
-                        </div>
-                        <div>
-                            <button className="w-36 py-3 px-3 text-sm focus:outline-none leading-none text-gray-700 bg-gray-100 rounded">배송전</button>
-                        </div>
-                    </li>
-                    <li className="flex items-center justify-between px-2 py-3 border-b">
-                        <div>
-                        <p className="mt-1 text-md font-bold text-indigo-900">라이더2(홍길동)</p>
-                        </div>
-                        <div>
-                            <button className="w-36 py-3 px-3 text-sm focus:outline-none leading-none text-rose-700 bg-rose-100 rounded">배송중</button>
-                        </div>
-                    </li>
-                    <li className="flex items-center justify-between px-2 py-3 border-b">
-                        <div>
-                        <p className="mt-1 text-md font-bold text-indigo-900">라이더3(고길동)</p>
-                        </div>
-                        <div>
-                            <button className="w-36 py-3 px-3 text-sm focus:outline-none leading-none text-green-700 bg-green-100 rounded">배송완료</button>
-                        </div>
-                    </li>
+                    {deliveryList.map((delivery) => (
+                        <li key={delivery.id} className="flex items-center justify-between px-2 py-3 border-b">
+                            <div>                            
+                                <p className="mt-1 text-md font-bold text-indigo-900">{delivery.id.toUpperCase()}({delivery.name})</p>
+                            </div>
+                            <div>
+                                <button className={`w-36 py-3 px-3 text-sm focus:outline-none leading-none text-${delivery.statusColor}-700 bg-${delivery.statusColor}-100 rounded`}>{delivery.status}</button>
+                            </div>
+                        </li>
+                    ))}
                 </ul>
             </div>
         </div>  

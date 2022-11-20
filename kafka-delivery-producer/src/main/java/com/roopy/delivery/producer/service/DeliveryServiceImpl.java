@@ -27,7 +27,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
             @Override
             public void onSuccess(SendResult<String, Object> result) {
-                log.info("[{}] Delivery status changed to {}", deliveryDTO.getCarNo(), deliveryDTO.getDeliveryStatus());
+                log.info("[{}] {} Delivery status changed to {}", deliveryDTO.getId(), deliveryDTO.getName(), deliveryDTO.getStatus());
             }
         });
     }

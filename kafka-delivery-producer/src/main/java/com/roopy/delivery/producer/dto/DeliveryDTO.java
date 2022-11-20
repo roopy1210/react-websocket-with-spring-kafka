@@ -11,6 +11,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeliveryDTO implements Serializable {
-    private String carNo;
-    private DeliveryStatus deliveryStatus;
+    private String id;
+    private String name;
+    private DeliveryStatus status;
+    private DeliveryStatusColor statusColor;
 }
