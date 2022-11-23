@@ -1,5 +1,6 @@
 package com.roopy.delivery.producer.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import java.io.Serializable;
@@ -12,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class DeliveryDTO implements Serializable {
     private String id;
-    private String name;
     private DeliveryStatus status;
+    @ApiModelProperty(value = "statusColor", hidden = true)
     private DeliveryStatusColor statusColor;
 }

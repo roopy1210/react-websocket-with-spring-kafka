@@ -20,14 +20,6 @@ public class DeliveryListener {
     public void listen(ConsumerRecord<String, DeliveryDTO> record) {
         log.info("Delivery info received : {}", record.value());
 
-        // React SockJsClient 사용시 메세지 수신을 위해서는
-        // 아래 template.convertAndSend 부분에서 선언된 topic 명을
-        // 사용하면 된다.
-        //
-        // <SockJsClient
-        //      ...
-        //      topics={['/topic/delivery']}
-        // />
         template.convertAndSend("/topic/delivery", record.value());
     }
 }
