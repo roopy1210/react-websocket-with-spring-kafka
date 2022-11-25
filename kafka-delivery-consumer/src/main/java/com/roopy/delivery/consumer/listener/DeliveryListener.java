@@ -18,7 +18,7 @@ public class DeliveryListener {
 
     @KafkaListener(topics = KafkaConstants.TOPIC, groupId = KafkaConstants.CONSUMER_GROUP_ID)
     public void listen(ConsumerRecord<String, DeliveryDTO> record) {
-        log.info("Delivery info received : {}", record.value());
+        log.info("Producer message received : {}", record.value());
 
         template.convertAndSend("/topic/delivery", record.value());
     }

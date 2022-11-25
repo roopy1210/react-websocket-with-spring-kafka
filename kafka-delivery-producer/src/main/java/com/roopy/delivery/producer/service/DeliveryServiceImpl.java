@@ -18,7 +18,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public void sendDeliveryStatus(DeliveryDTO deliveryDTO) {
-        ListenableFuture<SendResult<String,Object>> listenableFuture = kafkaTemplate.send("deliveryTopic", deliveryDTO);
+        ListenableFuture<SendResult<String,Object>> listenableFuture = kafkaTemplate.send("gdStoreTopic", deliveryDTO);
         listenableFuture.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onFailure(Throwable e) {
@@ -27,7 +27,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
             @Override
             public void onSuccess(SendResult<String, Object> result) {
-                log.info("[{}] {} Delivery status changed to {}", deliveryDTO.getId(), deliveryDTO.getStatus());
+                log.info("[{}] {} send delivery info", deliveryDTO.getId());
             }
         });
     }
